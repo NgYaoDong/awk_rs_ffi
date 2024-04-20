@@ -2201,17 +2201,17 @@ var *evaluate(node *op, var *res)
 
 	var *v1;
 
-	// printf("op = %p\n", op);
-	// printf("res = %p\n", res);
+	//printf("op = %p\n", op);
+	//printf("res = %p\n", res);
 
 	if (!op) {
-		// printf("op is NULL\n");
+		//printf("op is NULL\n");
 		var *re = setvar_s(res, NULL);
-		// printf("re = %p\n", re);
+		//printf("re = %p\n", re);
 		return setvar_s(res, NULL);
 	}
 
-	// for (int i = 0; i < 20; i++) {
+	// for (int i = 0; i < 19; i++) {
 	// 	printf("intvar[%d] as a string: %s\n", i, getvar_s(intvar[i]));
 	// }
 
@@ -2238,11 +2238,11 @@ var *evaluate(node *op, var *res)
 		opinfo = op->info;
 		opn = (opinfo & OPNMASK);
 		g_lineno = op->lineno;
-		// printf("l.n: %p\n", op->l.n);
+		//printf("l.n: %p\n", op->l.n);
 		op1 = op->l.n;
-		// printf("op1: %p\n", op1);
+		//printf("op1: %p\n", op1);
 		debug_printf_eval("opinfo:%08x opn:%08x\n", opinfo, opn);
-		// printf("opinfo:%08x opn:%08x\n", opinfo, opn);
+		//printf("opinfo:%08x opn:%08x\n", opinfo, opn);
 
 
 		/* "delete" is special:
@@ -2250,12 +2250,12 @@ var *evaluate(node *op, var *res)
 		 * must not evaluate it in "execute inevitable things" part.
 		 */
 		if (XC(opinfo & OPCLSMASK) == XC(OC_DELETE)) {
-			// printf("delete\n");
+			//printf("delete\n");
 			uint32_t info = op1->info & OPCLSMASK;
 			var *v;
 
 			debug_printf_eval("DELETE\n");
-			// printf("DELETE\n");
+			//printf("DELETE\n");
 			if (info == OC_VAR) {
 				v = op1->l.v;
 			} else if (info == OC_FNARG) {
@@ -2265,7 +2265,7 @@ var *evaluate(node *op, var *res)
 			}
 			if (op1->r.n) { /* array ref? */
 				const char *s;
-				// printf("array ref\n");
+				//printf("array ref\n");
 				s = getvar_s(evaluate(op1->r.n, v1));
 				hash_remove(iamarray(v), s);
 			} else {
@@ -2277,40 +2277,40 @@ var *evaluate(node *op, var *res)
 		/* execute inevitable things */
 		if (opinfo & OF_RES1) {
 			L.v = evaluate(op1, v1);
-			// printf("L.v = %p\n", L.v);
+			//printf("L.v = %p\n", L.v);
 		}
 		if (opinfo & OF_RES2) {
 			R.v = evaluate(op->r.n, v1+1);
-			// printf("R.v = %p\n", R.v);
+			//printf("R.v = %p\n", R.v);
 		}
 		if (opinfo & OF_STR1) {
 			L.s = getvar_s(L.v);
 			debug_printf_eval("L.s:'%s'\n", L.s);
-			// printf("L.s:'%s'\n", L.s);
+			//printf("L.s:'%s'\n", L.s);
 		}
 		if (opinfo & OF_STR2) {
 			R.s = getvar_s(R.v);
 			debug_printf_eval("R.s:'%s'\n", R.s);
-			// printf("R.s:'%s'\n", R.s);
+			//printf("R.s:'%s'\n", R.s);
 		}
 		if (opinfo & OF_NUM1) {
 			L_d = getvar_i(L.v);
 			debug_printf_eval("L_d:%f\n", L_d);
-			// printf("L_d:%f\n", L_d);
+			//printf("L_d:%f\n", L_d);
 		}
 
-		// printf("intvar[NF] address: %p\n", intvar[NF]);
+		//printf("intvar[NF] address: %p\n", intvar[NF]);
 
 
 		debug_printf_eval("switch(0x%x)\n", XC(opinfo & OPCLSMASK));
-		// printf("switch(0x%x)\n", XC(opinfo & OPCLSMASK));
+		//printf("switch(0x%x)\n", XC(opinfo & OPCLSMASK));
 		switch (XC(opinfo & OPCLSMASK)) {
 
 		/* -- iterative node type -- */
 
 		/* test pattern */
 		case XC( OC_TEST ):
-			// printf("OC_TEST\n");
+			//printf("OC_TEST\n");
 			if ((op1->info & OPCLSMASK) == OC_COMMA) {
 				/* it's range pattern */
 				if ((opinfo & OF_CHECKED) || ptest(op1->l.n)) {
@@ -2328,34 +2328,34 @@ var *evaluate(node *op, var *res)
 
 		/* just evaluate an expression, also used as unconditional jump */
 		case XC( OC_EXEC ):
-			// printf("OC_EXEC\n");
+			//printf("OC_EXEC\n");
 			break;
 
 		/* branch, used in if-else and various loops */
 		case XC( OC_BR ):
-			// printf("OC_BR\n");
+			//printf("OC_BR\n");
 			op = istrue(L.v) ? op->a.n : op->r.n;
 			break;
 
 		/* initialize for-in loop */
 		case XC( OC_WALKINIT ):{
-			// printf("OC_WALKINIT\n");
+			//printf("OC_WALKINIT\n");
 			xhash* tmp = iamarray(R.v); hashwalk_init(L.v, tmp);
 			break;}
 
 		/* get next array item */
 		case XC( OC_WALKNEXT ):
-			// printf("OC_WALKNEXT\n");
+			//printf("OC_WALKNEXT\n");
 			op = hashwalk_next(L.v) ? op->a.n : op->r.n;
 			break;
 
 		case XC( OC_PRINT ):
 		case XC( OC_PRINTF ): {
-			// printf("OC_PRINT|PRINTF\n");
+			//printf("OC_PRINT|//printf\n");
 			FILE *F = stdout;
 
 			if (op->r.n) {
-				// printf("op->r.n is not NULL\n");
+				//printf("op->r.n is not NULL\n");
 				rstream *rsm = newfile(R.s);
 				if (!rsm->F) {
 					if (opn == '|') {
@@ -2371,21 +2371,21 @@ var *evaluate(node *op, var *res)
 			}
 
 			if ((opinfo & OPCLSMASK) == OC_PRINT) {
-				// printf("opinfo & OPCLSMASK == OC_PRINT\n");
+				//printf("opinfo & OPCLSMASK == OC_PRINT\n");
 				if (!op1) {
-					// printf("op1 is NULL\n");
-					// printf("%s", getvar_s(intvar[F0]));
+					//printf("op1 is NULL\n");
+					//printf("%s", getvar_s(intvar[F0]));
 					fputs(getvar_s(intvar[F0]), F);
 				} else {
 					while (op1) {
-						// printf("op1 is not NULL\n");
-						// printf("op1->info = %d\n", op1->info);
-						// printf("&op1 = %p\n", op1);
+						//printf("op1 is not NULL\n");
+						//printf("op1->info = %d\n", op1->info);
+						//printf("&op1 = %p\n", op1);
 						var *v = evaluate(nextarg(&op1), v1);
-						// printf("hi %s\n", getvar_s(v));
-						// printf("op1 info = %d\n", op1->info);
+						//printf("hi %s\n", getvar_s(v));
+						//printf("op1 info = %d\n", op1->info);
 						if (v->type & VF_NUMBER) {
-							printf("intvar[OFMT] = %s\n", getvar_s(intvar[OFMT]));
+							//printf("intvar[OFMT] = %s\n", getvar_s(intvar[OFMT]));
 							fmt_num(g_buf, MAXVARFMT, getvar_s(intvar[OFMT]),
 									getvar_i(v), TRUE);
 							fputs(g_buf, F);
@@ -2411,66 +2411,66 @@ var *evaluate(node *op, var *res)
 		/* case XC( OC_DELETE ): - moved to happen before arg evaluation */
 
 		case XC( OC_NEWSOURCE ):
-			// printf("OC_NEWSOURCE\n");
+			//printf("OC_NEWSOURCE\n");
 			g_progname = op->l.new_progname;
 			break;
 
 		case XC( OC_RETURN ):
-			// printf("OC_RETURN\n");
+			//printf("OC_RETURN\n");
 			copyvar(res, L.v);
 			break;
 
 		case XC( OC_NEXTFILE ):
-			// printf("OC_NEXTFILE\n");
+			//printf("OC_NEXTFILE\n");
 			nextfile = TRUE;
 		case XC( OC_NEXT ):
-			// printf("OC_NEXT\n");
+			//printf("OC_NEXT\n");
 			nextrec = TRUE;
 		case XC( OC_DONE ):
-			// printf("OC_DONE\n");
+			//printf("OC_DONE\n");
 			clrvar(res);
 			break;
 
 		case XC( OC_EXIT ):
-			// printf("OC_EXIT\n");
+			//printf("OC_EXIT\n");
 			awk_exit(L_d);
 
 		/* -- recursive node type -- */
 
 		case XC( OC_VAR ):
-			// printf("OC_VAR\n");
+			//printf("OC_VAR\n");
 			debug_printf_eval("VAR\n");
-			// printf("op->l.v = %p\n", op->l.v);
+			//printf("op->l.v = %p\n", op->l.v);
 			L.v = op->l.v;
-			// printf("L.v = %p\n", L.v);
-			// printf("intvar[NF] address: %p\n", intvar[NF]);
-			// printf("L.v == intvar[NF] = %d\n", L.v == intvar[NF]);
+			//printf("L.v = %p\n", L.v);
+			//printf("intvar[NF] address: %p\n", intvar[NF]);
+			//printf("L.v == intvar[NF] = %d\n", L.v == intvar[NF]);
 			if (L.v == intvar[NF])
 				split_f0();
 			goto v_cont;
 
 		case XC( OC_FNARG ):
-			// printf("OC_FNARG\n");
+			//printf("OC_FNARG\n");
 			debug_printf_eval("FNARG[%d]\n", op->l.aidx);
-			// printf("FNARG[%d]\n", op->l.aidx);
+			//printf("FNARG[%d]\n", op->l.aidx);
 			L.v = &fnargs[op->l.aidx];
  v_cont:
 			res = op->r.n ? findvar(iamarray(L.v), R.s) : L.v;
 			break;
 
 		case XC( OC_IN ):
-			// printf("OC_IN\n");
+			//printf("OC_IN\n");
 			setvar_i(res, hash_search(iamarray(R.v), L.s) ? 1 : 0);
 			break;
 
 		case XC( OC_REGEXP ):
-			// printf("OC_REGEXP\n");
+			//printf("OC_REGEXP\n");
 			op1 = op;
 			L.s = getvar_s(intvar[F0]);
 			goto re_cont;
 
 		case XC( OC_MATCH ):
-			// printf("OC_MATCH\n");
+			//printf("OC_MATCH\n");
 			op1 = op->r.n;
  re_cont:
 			{
@@ -2484,7 +2484,7 @@ var *evaluate(node *op, var *res)
 
 		case XC( OC_MOVE ):
 			debug_printf_eval("MOVE\n");
-			// printf("OC_MOVE\n");
+			//printf("OC_MOVE\n");
 			/* if source is a temporary string, jusk relink it to dest */
 //Disabled: if R.v is numeric but happens to have cached R.v->string,
 //then L.v ends up being a string, which is wrong
@@ -2497,14 +2497,14 @@ var *evaluate(node *op, var *res)
 			break;
 
 		case XC( OC_TERNARY ):
-			// printf("OC_TERNARY\n");
+			//printf("OC_TERNARY\n");
 			if ((op->r.n->info & OPCLSMASK) != OC_COLON)
 				syntax_error(EMSG_POSSIBLE_ERROR);
 			res = evaluate(istrue(L.v) ? op->r.n->l.n : op->r.n->r.n, res);
 			break;
 
 		case XC( OC_FUNC ): {
-			// printf("OC_FUNC\n");
+			//printf("OC_FUNC\n");
 			var *vbeg, *v;
 			const char *sv_progname;
 
@@ -2537,7 +2537,7 @@ var *evaluate(node *op, var *res)
 
 		case XC( OC_GETLINE ):
 		case XC( OC_PGETLINE ): {
-			// printf("OC_GETLINE\n");
+			//printf("OC_GETLINE\n");
 			rstream *rsm;
 			int i;
 
@@ -2577,7 +2577,7 @@ var *evaluate(node *op, var *res)
 
 		/* simple builtins */
 		case XC( OC_FBLTIN ): {
-			// printf("OC_FBLTIN\n");
+			//printf("OC_FBLTIN\n");
 			double R_d = R_d; /* for compiler */
 
 			switch (opn) {
@@ -2634,15 +2634,15 @@ var *evaluate(node *op, var *res)
 
 			case F_le:
 				debug_printf_eval("length: L.s:'%s'\n", L.s);
-				// printf("length: L.s:'%s'\n", L.s);
+				//printf("length: L.s:'%s'\n", L.s);
 				if (!op1) {
 					L.s = getvar_s(intvar[F0]);
-					// printf("length: L.s='%s'\n", L.s);
+					//printf("length: L.s='%s'\n", L.s);
 					debug_printf_eval("length: L.s='%s'\n", L.s);
 				}
 				else if (L.v->type & VF_ARRAY) {
 					R_d = L.v->x.array->nel;
-					// printf("length: array_len:%d\n", L.v->x.array->nel);
+					//printf("length: array_len:%d\n", L.v->x.array->nel);
 					debug_printf_eval("length: array_len:%d\n", L.v->x.array->nel);
 					break;
 				}
@@ -2650,14 +2650,14 @@ var *evaluate(node *op, var *res)
 				break;
 
 			case F_sy:
-				// printf("F_sy\n");
+				//printf("F_sy\n");
 				fflush_all();
 				R_d = (ENABLE_FEATURE_ALLOW_EXEC && L.s && *L.s)
 						? (system(L.s) >> 8) : 0;
 				break;
 
 			case F_ff:
-				// printf("F_ff\n");
+				//printf("F_ff\n");
 				if (!op1) {
 					fflush(stdout);
 				} else if (L.s && *L.s) {
@@ -2669,7 +2669,7 @@ var *evaluate(node *op, var *res)
 				break;
 
 			case F_cl: {
-				// printf("F_cl\n");
+				//printf("F_cl\n");
 				rstream *rsm;
 				int err = 0;
 				rsm = (rstream *)hash_search(fdhash, L.s);
@@ -2693,22 +2693,24 @@ var *evaluate(node *op, var *res)
 				break;
 			}
 			} /* switch */
+			//printf("R_d = %f\n", R_d);
 			setvar_i(res, R_d);
+			//printf("res.string = %s\n", res->string);
 			break;
 		}
 
 		case XC( OC_BUILTIN ):
-			// printf("OC_BUILTIN\n");
+			//printf("OC_BUILTIN\n");
 			res = exec_builtin(op, res);
 			break;
 
 		case XC( OC_SPRINTF ):
-			// printf("OC_SPRINTF\n");
+			//printf("OC_SPRINTF\n");
 			setvar_p(res, awk_printf(op1));
 			break;
 
 		case XC( OC_UNARY ): {
-			// printf("OC_UNARY\n");
+			//printf("OC_UNARY\n");
 			double Ld, R_d;
 
 			Ld = R_d = getvar_i(R.v);
@@ -2739,7 +2741,7 @@ var *evaluate(node *op, var *res)
 		}
 
 		case XC( OC_FIELD ): {
-			// printf("OC_FIELD\n");
+			//printf("OC_FIELD\n");
 			int i = (int)getvar_i(R.v);
 			if (i < 0)
 				syntax_error(EMSG_NEGATIVE_FIELD);
@@ -2757,10 +2759,10 @@ var *evaluate(node *op, var *res)
 		/* concatenation (" ") and index joining (",") */
 		case XC( OC_CONCAT ):
 		case XC( OC_COMMA ): {
-			// printf("OC_CONCAT\n");
+			//printf("OC_CONCAT\n");
 			const char *sep = "";
 			if ((opinfo & OPCLSMASK) == OC_COMMA) {
-				// printf("OC_COMMA\n");
+				//printf("OC_COMMA\n");
 				sep = getvar_s(intvar[SUBSEP]);
 			}
 			setvar_p(res, xasprintf("%s%s%s", L.s, sep, R.s));
@@ -2768,21 +2770,21 @@ var *evaluate(node *op, var *res)
 		}
 
 		case XC( OC_LAND ):
-			// printf("OC_LAND\n");
+			//printf("OC_LAND\n");
 			setvar_i(res, istrue(L.v) ? ptest(op->r.n) : 0);
 			break;
 
 		case XC( OC_LOR ):
-			// printf("OC_LOR\n");
+			//printf("OC_LOR\n");
 			setvar_i(res, istrue(L.v) ? 1 : ptest(op->r.n));
 			break;
 
 		case XC( OC_BINARY ):
 		case XC( OC_REPLACE ): {
-			// printf("OC_BINARY\n");
+			//printf("OC_BINARY\n");
 			double R_d = getvar_i(R.v);
 			debug_printf_eval("BINARY/REPLACE: R_d:%f opn:%c\n", R_d, opn);
-			// printf("BINARY/REPLACE: R_d:%f opn:%c\n", R_d, opn);
+			//printf("BINARY/REPLACE: R_d:%f opn:%c\n", R_d, opn);
 			switch (opn) {
 			case '+':
 				L_d += R_d;
@@ -2811,20 +2813,20 @@ var *evaluate(node *op, var *res)
 				break;
 			}
 			debug_printf_eval("BINARY/REPLACE result:%f\n", L_d);
-			// printf("BINARY/REPLACE result:%f\n", L_d);
+			//printf("BINARY/REPLACE result:%f\n", L_d);
 			res = setvar_i(((opinfo & OPCLSMASK) == OC_BINARY) ? res : L.v, L_d);
 			break;
 		}
 
 		case XC( OC_COMPARE ): {
-			// printf("OC_COMPARE\n");
+			//printf("OC_COMPARE\n");
 			int i = i; /* for compiler */
 			double Ld;
 
 			if (is_numeric(L.v) && is_numeric(R.v)) {
 				Ld = getvar_i(L.v) - getvar_i(R.v);
 			} else {
-				// printf("NOT NUMARIC\n");
+				//printf("NOT NUMARIC\n");
 				const char *l = getvar_s(L.v);
 				const char *r = getvar_s(R.v);
 				Ld = icase ? strcasecmp(l, r) : strcmp(l, r);
@@ -2858,8 +2860,8 @@ var *evaluate(node *op, var *res)
 
 	nvfree(v1);
 	debug_printf_eval("returning from %s(): %p\n", __func__, res);
-	// printf("returning from %s(): %p\n", __func__, res);
-	// printf("Res->number:%lf\n", res->number);
+	//printf("returning from %s(): %p\n", __func__, res);
+	//printf("Res->number:%lf\n", res->number);
 	return res;
 #undef fnargs
 #undef seed

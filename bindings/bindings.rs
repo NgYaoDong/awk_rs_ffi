@@ -1402,3 +1402,6 @@ extern "C" {
 extern "C" {
     pub fn print_rstream(rs: *mut rstream_s);
 }
+extern "C" {
+    pub fn xasprintf(format: *const ::std::os::raw::c_char, ...) -> *mut ::std::os::raw::c_char;
+}

@@ -27,7 +27,7 @@
                     "kind": "bin"
                 }
             },
-            "args": ["-F '[#]' '{ print NF }'"],
+            "args": ["'{ if (length == 0) { print "bar" } }'"],
             "cwd": "${workspaceFolder}"
         },
         {

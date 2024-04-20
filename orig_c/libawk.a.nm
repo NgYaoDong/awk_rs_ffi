@@ -2,9 +2,9 @@
 awk.o:
 0000000000002adb T as_regex
                  U atan2
-0000000000006a1f T awk_exit
+00000000000069f1 T awk_exit
 00000000000038b3 T awk_getline
-0000000000006db6 T awk_main
+0000000000006d88 T awk_main
 0000000000003e5a T awk_printf
 0000000000002e85 T awk_split
 000000000000413c T awk_sub
@@ -71,7 +71,7 @@ awk.o:
 0000000000000db9 T incvar
                  U init_g
 00000000000006aa T isalnum_
-0000000000006b32 T is_assignment
+0000000000006b04 T is_assignment
 0000000000000df5 T is_numeric
                  U __isoc99_sscanf
 0000000000000e1d T istrue
@@ -91,7 +91,7 @@ awk.o:
 0000000000001966 T new_node
 0000000000003699 T nextarg
 00000000000005ec T nextchar
-0000000000006bff T next_input_file
+0000000000006bd1 T next_input_file
 00000000000012c2 T next_token
 00000000000005b7 T nextword
 000000000000008b t not_const_pp
@@ -104,7 +104,6 @@ awk.o:
                  U popen
                  U pow
 00000000000003d4 R PRIMES
-                 U printf
 0000000000003880 T ptest
                  U ptr_to_globals
 0000000000002bc9 T qrealloc

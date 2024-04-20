@@ -106,11 +106,11 @@ SKIPPED: awk 'gcc build bug'
 echo -ne '' >input
 echo -ne '' | target/debug/awk_rs 'BEGIN { print ":" NF ":" $0 ":" $1 ":" $2 ":" }'
 FAIL: awk NF in BEGIN
---- expected	2024-04-19 19:16:09.857355100 +0000
-+++ actual	2024-04-19 19:16:09.966281800 +0000
+--- expected	2024-04-20 15:32:19.815761700 +0000
++++ actual	2024-04-20 15:32:19.880060800 +0000
 @@ -1 +1 @@
 -:0::::
-+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
++:0:(null):(null):(null):
 ======================
 echo -ne '' >input
 echo -ne '' | target/debug/awk_rs '
@@ -126,19 +126,16 @@ BEGIN {
 	print (c() ? "string" : "number");
 }'
 FAIL: awk string cast (bug 725)
---- expected	2024-04-19 19:16:10.046728000 +0000
-+++ actual	2024-04-19 19:16:10.172871500 +0000
-@@ -1,2 +0,0 @@
+--- expected	2024-04-20 15:32:19.949723300 +0000
++++ actual	2024-04-20 15:32:20.089879600 +0000
+@@ -1,2 +1,2 @@
 -0
--number
++(null)0
+ number
 ======================
 echo -ne '' >input
 echo -ne '' | target/debug/awk_rs 'BEGIN { arr [3] = 1; print arr [3] }'
-FAIL: awk handles whitespace before array subscript
---- expected	2024-04-19 19:16:10.251446900 +0000
-+++ actual	2024-04-19 19:16:10.366204800 +0000
-@@ -1 +0,0 @@
--1
+PASS: awk handles whitespace before array subscript
 ======================
 echo -ne '' >input
 echo -ne '' | target/debug/awk_rs 'BEGIN { getline line <"doesnt_exist"; print ERRNO; ERRNO=0; close("doesnt_exist"); print ERRNO; print "Ok" }'
@@ -164,26 +161,7 @@ BEGIN {
   l="a"
   exit;
 }'
-FAIL: awk nested loops with the same variable
---- expected	2024-04-19 19:16:10.656637600 +0000
-+++ actual	2024-04-19 19:16:10.767987600 +0000
-@@ -1,16 +0,0 @@
--outer1 a
-- inner d
-- inner e
-- inner f
--outer2 f
--outer1 b
-- inner d
-- inner e
-- inner f
--outer2 f
--outer1 c
-- inner d
-- inner e
-- inner f
--outer2 f
--end f
+PASS: awk nested loops with the same variable
 ======================
 echo -ne '' >input
 echo -ne '' | target/debug/awk_rs '
@@ -197,12 +175,13 @@ print "[0]:" a[0]
 print "[1]:" a[1]
 }'
 FAIL: awk 'delete a[v--]' evaluates v-- once
---- expected	2024-04-19 19:16:10.826458600 +0000
-+++ actual	2024-04-19 19:16:10.926449000 +0000
-@@ -1,3 +0,0 @@
--0
--[0]:zeroth
+--- expected	2024-04-20 15:32:20.577161700 +0000
++++ actual	2024-04-20 15:32:20.643896400 +0000
+@@ -1,3 +1,3 @@
+ 0
+ [0]:zeroth
 -[1]:
++[1]:(null)
 ======================
 echo -ne '' >input
 echo -ne '' | target/debug/awk_rs 'func f(,) { }' 2>&1
@@ -231,11 +210,7 @@ SKIPPED: awk large integer
 ======================
 echo -ne '' >input
 echo -ne '' | target/debug/awk_rs 'BEGIN{ A[1]=2; A["qwe"]="asd"; print length(A)}'
-FAIL: awk length(array)
---- expected	2024-04-19 19:16:11.856113700 +0000
-+++ actual	2024-04-19 19:16:11.952768000 +0000
-@@ -1 +0,0 @@
--2
+PASS: awk length(array)
 ======================
 echo -ne '' >input
 echo -ne 'qwe' | target/debug/awk_rs '{print length; print length(); print length("qwe"); print length(99+9)}'
@@ -244,8 +219,8 @@ PASS: awk length()
 echo -ne '' >input
 echo -ne '\n' | target/debug/awk_rs '{ print length, 1 }'
 FAIL: awk print length, 1
---- expected	2024-04-19 19:16:12.166208100 +0000
-+++ actual	2024-04-19 19:16:12.276685900 +0000
+--- expected	2024-04-20 15:32:21.930813100 +0000
++++ actual	2024-04-20 15:32:22.080192900 +0000
 @@ -1 +0,0 @@
 -0 1
 ======================
@@ -260,8 +235,8 @@ PASS: awk length == 0
 echo -ne '' >input
 echo -ne '\n' | target/debug/awk_rs '{ if (length == 0) { print "bar" } }'
 FAIL: awk if (length == 0)
---- expected	2024-04-19 19:16:12.615941500 +0000
-+++ actual	2024-04-19 19:16:12.736126500 +0000
+--- expected	2024-04-20 15:32:22.400509600 +0000
++++ actual	2024-04-20 15:32:22.530156200 +0000
 @@ -1 +0,0 @@
 -bar
 ======================
@@ -275,21 +250,16 @@ SKIPPED: awk errors on missing delete arg
 ======================
 echo -ne '' >input
 echo -ne 'anything' | target/debug/awk_rs -v i=1 "BEGIN {print \"str\" ++i}"
-FAIL: awk do not allow "str"++
---- expected	2024-04-19 19:16:12.951409800 +0000
-+++ actual	2024-04-19 19:16:13.053574900 +0000
-@@ -1 +1 @@
--str2
-+strstr
+PASS: awk do not allow "str"++
 ======================
 echo -ne '' >input
 echo -ne 'foo--bar' | target/debug/awk_rs -F '-*' '{print $1 "-" $2 "=" $3 "*" $4}'
 FAIL: awk FS regex which can match empty string
---- expected	2024-04-19 19:16:13.106458400 +0000
-+++ actual	2024-04-19 19:16:13.236300000 +0000
+--- expected	2024-04-20 15:32:22.811859400 +0000
++++ actual	2024-04-20 15:32:22.880218800 +0000
 @@ -1 +1 @@
 -foo-bar=*
-+foofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoofoo
++foo-bar=(null)*(null)
 ======================
 echo -ne '' >input
 echo -ne 'a=====123=' | target/debug/awk_rs -F '=+' '{print $NF}'

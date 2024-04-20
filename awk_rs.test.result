@@ -23,9 +23,9 @@ PASS: awk gsub falls back to non-extended-regex
 SKIPPED: awk 'gcc build bug'
 FAIL: awk NF in BEGIN
 FAIL: awk string cast (bug 725)
-FAIL: awk handles whitespace before array subscript
+PASS: awk handles whitespace before array subscript
 PASS: awk handles non-existing file correctly
-FAIL: awk nested loops with the same variable
+PASS: awk nested loops with the same variable
 FAIL: awk 'delete a[v--]' evaluates v-- once
 PASS: awk func arg parsing 1
 PASS: awk func arg parsing 2
@@ -34,7 +34,7 @@ PASS: awk func arg parsing 4
 PASS: awk handles empty ()
 PASS: awk FS assignment
 SKIPPED: awk large integer
-FAIL: awk length(array)
+PASS: awk length(array)
 PASS: awk length()
 FAIL: awk print length, 1
 PASS: awk print length 1
@@ -45,6 +45,6 @@ SKIPPED: awk -e and ARGC
 SKIPPED: awk handles invalid for loop
 SKIPPED: awk handles colon not preceded by ternary
 SKIPPED: awk errors on missing delete arg
-FAIL: awk do not allow "str"++
+PASS: awk do not allow "str"++
 FAIL: awk FS regex which can match empty string
 PASS: awk $NF is empty
