@@ -307,6 +307,7 @@ fn setvar_p_rs(v: *mut var, value: *mut i8) -> *mut var {
 }
 
 fn getvar_s_rs(v: *mut var) -> *const i8 {
+    // return unsafe { getvar_s(v) };
     let (globals, globals2) = init_globs_rs();
     
 
@@ -315,7 +316,7 @@ fn getvar_s_rs(v: *mut var) -> *const i8 {
         
         fmt_num_rs(
             globals.g_buf,
-            MAXVARFMT as i32,
+            MAXVARFMT.try_into().unwrap(),
             getvar_s_rs(globals2.intvar[CONVFMT as usize]),
             deref_mut_var_rs(v).number,
             1,
@@ -324,7 +325,7 @@ fn getvar_s_rs(v: *mut var) -> *const i8 {
         bitwise_or_type_rs(v, VF_CACHED);
     }
     if deref_mut_var_rs(v).string == null_mut() {
-        return null_mut();
+        return "\0".as_ptr() as *const i8;
     }
     deref_mut_var_rs(v).string
 }
@@ -420,6 +421,22 @@ fn handle_special_rs(v: *mut var) {
     }
 }
 
+fn nvalloc_rs(n: i32) -> *mut var {
+    unsafe { nvalloc(n) }
+}
+
+fn ptest_rs(pattern: *mut node) -> i32 {
+    unsafe { ptest(pattern) }
+}
+
+fn hashwalk_init_rs(v: *mut var, array: *mut xhash) {
+    unsafe { hashwalk_init(v, array) }
+}
+
+fn hashwalk_next_rs(v: *mut var) -> i32 {
+    unsafe { hashwalk_next(v) }
+}
+
 fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
     let (globals, globals2) = init_globs_rs();
 
@@ -436,7 +453,7 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
 
     // println!("entered evaluate");
 
-    v1 = unsafe { nvalloc(2) };
+    v1 = nvalloc_rs(2);
 
     while !(op.is_null()) {
         //println!("in while loop of op not null");
@@ -464,7 +481,7 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
         opinfo = deref_node_rs(op).info;
         opn = opinfo & OPNMASK;
         globals.g_lineno = deref_node_rs(op).lineno.try_into().unwrap();
-        op1 = unsafe { (*op).l.n };
+        op1 = get_node_l_n_rs(op);
 		// debug_printf_eval("opinfo:%08x opn:%08x\n", opinfo, opn);
         //println!("opinfo: {} opn: {}", opinfo, opn);
 
@@ -481,18 +498,18 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
             // debug_printf_eval("DELETE\n");
             if info == OC_VAR {
                 //println!("info == OC_VAR");
-                v = unsafe { (*op1).l.v };
+                v = get_node_l_v_rs(op1);
             } else if info == OC_FNARG {
                 //println!("info == OC_FNARG");
-                v = globals2.evaluate__fnargs.wrapping_add(unsafe { (*op1).l.aidx }.try_into().unwrap());
+                v = globals2.evaluate__fnargs.wrapping_add(get_node_l_aidx_rs(op1).try_into().unwrap());
             } else {
                 //println!("else");
-                syntax_error_rs(unsafe { EMSG_NOT_ARRAY.as_ptr() });
+                syntax_error_rs(emsg_not_array_rs());
             }
-            if unsafe { !(deref_node_rs(op1).r.n.is_null()) } { /* array ref? */
+            if !(get_node_r_n_rs(op1).is_null()) { /* array ref? */
                 //println!("array ref");
                 let s: *const i8;
-                s = getvar_s_rs(evaluate_rs_translate(unsafe { (*op1).r.n }, v1));
+                s = getvar_s_rs(evaluate_rs_translate(get_node_r_n_rs(op1), v1));
                 hash_remove_rs(iamarray_rs(v), s);
             } else {
                 //println!("line 501");
@@ -502,7 +519,7 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
             // goto next
             if (opinfo & OPCLSMASK) <= SHIFT_TIL_THIS {
                 //println!("<= SHIFT_TIL_THIS");
-                op = unsafe { (*op).a.n };
+                op = get_node_a_n_rs(op);
                 continue;
             }
             if (opinfo & OPCLSMASK) >= RECUR_FROM_THIS {
@@ -521,7 +538,7 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
                 // println!("l.v.string = {:?}", unsafe { std::ffi::CStr::from_ptr((*l.v).string) });
         }
         if opinfo & OF_RES2 != 0 {
-                r.v = evaluate_rs_translate(unsafe { (*op).r.n }, v1.wrapping_add(1));
+                r.v = evaluate_rs_translate(get_node_r_n_rs(op), v1.wrapping_add(1));
                 // println!("r.v.string = {:?}", unsafe { std::ffi::CStr::from_ptr((*r.v).string) });
         }
         if opinfo & OF_STR1 != 0 {
@@ -552,25 +569,25 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
                 if (deref_node_rs(op1).info & OPCLSMASK) == OC_COMMA {
                 //println!("line 556");
                 /* it's range pattern */
-                if (opinfo & OF_CHECKED) != 0 || unsafe { ptest((*op1).l.n) } != 0 {
+                if (opinfo & OF_CHECKED) != 0 || ptest_rs(get_node_l_n_rs(op)) != 0 {
                     //println!("line 559");
-                    unsafe { (*op ).info |= OF_CHECKED };
-                    if unsafe { ptest((*op1).r.n) } != 0 {
+                    op_info_or_assign_rs(op);
+                    if ptest_rs(get_node_r_n_rs(op1)) != 0 {
                         //println!("line 562");
-                        unsafe { (*op).info &= !OF_CHECKED };
+                        op_info_and_assign_rs(op);
                     }
-                    op = unsafe { (*op).a.n };
+                    op = get_node_a_n_rs(op);
                 } else {
                     //println!("line 567");
-                    op = unsafe { (*op).r.n };
+                    op = get_node_r_n_rs(op);
                 }
             } else {
-                if unsafe { ptest(op1) } != 0 {
+                if ptest_rs(op1) != 0 {
                     //println!("line 572");
-                    op = unsafe { (*op).a.n };
+                    op = get_node_a_n_rs(op);
                 } else {
                     //println!("line 575");
-                    op = unsafe { (*op).r.n };
+                    op = get_node_r_n_rs(op);
                 }
             }
         },
@@ -581,25 +598,25 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
             //println!("line 584, OC_BR");
             if istrue_rs(l.v) != 0 {
                 //println!("line 586");
-                op = unsafe { (*op).a.n };
+                op = get_node_a_n_rs(op);
             } else {
                 //println!("line 589");
-                op = unsafe { (*op).r.n };
+                op = get_node_r_n_rs(op);
             }
         },
         OC_WALKINIT => {
             //println!("line 594, OC_WALKINIT");
             let tmp: *mut xhash = iamarray_rs(r.v);
-            unsafe { hashwalk_init(l.v, tmp) };
+            hashwalk_init_rs(l.v, tmp);
         },
         OC_WALKNEXT => {
             //println!("line 599, OC_WALKNEXT");
-            if unsafe { hashwalk_next(l.v) } != 0 {
+            if hashwalk_next_rs(l.v) != 0 {
             //println!("line 601");
-                op = unsafe { (*op).a.n };
+                op = get_node_a_n_rs(op);
             } else {
             //println!("line 604");
-                op = unsafe { (*op).r.n };
+                op = get_node_r_n_rs(op);
             }
         },
         OC_PRINT | OC_PRINTF => {
@@ -964,6 +981,7 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
                         R_d = (unsafe { *(*(l.v)).x.array }).nel.into();
                     } else if op1.is_null() {
                         l.s = getvar_s_rs(globals2.intvar[F0 as usize]);
+                        // l.s = unsafe { getvar_s(globals2.intvar[F0 as usize]) };
                         R_d = strlen_rs(l.s) as f64;
                     } else {
                         R_d = strlen_rs(l.s) as f64;
@@ -1245,6 +1263,38 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
     nvfree_rs(v1);
     // debug_printf_eval("returning from %s(): %p\n", __func__, res);
     res
+}
+
+fn op_info_and_assign_rs(op: *mut node_s) {
+    unsafe { (*op).info &= !OF_CHECKED };
+}
+
+fn op_info_or_assign_rs(op: *mut node_s) {
+    unsafe { (*op ).info |= OF_CHECKED };
+}
+
+fn get_node_a_n_rs(node: *mut node) -> *mut node {
+    unsafe { (*node).a.n }
+}
+
+fn get_node_r_n_rs(node: *mut node) -> *mut node {
+    unsafe { (*node).r.n }
+}
+
+fn emsg_not_array_rs() -> *const i8 {
+    unsafe { EMSG_NOT_ARRAY.as_ptr() }
+}
+
+fn get_node_l_aidx_rs(node: *mut node) -> i32 {
+    unsafe { (*node).l.aidx }
+}
+
+fn get_node_l_v_rs(node: *mut node) -> *mut var {
+    unsafe { (*node).l.v }
+}
+
+fn get_node_l_n_rs(node: *mut node) -> *mut node {
+    unsafe { (*node).l.n }
 }
 
 fn nvfree_rs(v1: *mut var) {

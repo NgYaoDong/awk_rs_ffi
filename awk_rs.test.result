@@ -21,12 +21,12 @@ SKIPPED: awk oct const
 PASS: awk floating const with leading zeroes
 PASS: awk gsub falls back to non-extended-regex
 SKIPPED: awk 'gcc build bug'
-FAIL: awk NF in BEGIN
-FAIL: awk string cast (bug 725)
+PASS: awk NF in BEGIN
+PASS: awk string cast (bug 725)
 PASS: awk handles whitespace before array subscript
 PASS: awk handles non-existing file correctly
 PASS: awk nested loops with the same variable
-FAIL: awk 'delete a[v--]' evaluates v-- once
+PASS: awk 'delete a[v--]' evaluates v-- once
 PASS: awk func arg parsing 1
 PASS: awk func arg parsing 2
 PASS: awk func arg parsing 3
@@ -36,15 +36,15 @@ PASS: awk FS assignment
 SKIPPED: awk large integer
 PASS: awk length(array)
 PASS: awk length()
-FAIL: awk print length, 1
+PASS: awk print length, 1
 PASS: awk print length 1
 PASS: awk length == 0
-FAIL: awk if (length == 0)
+PASS: awk if (length == 0)
 PASS: awk -f and ARGC
 SKIPPED: awk -e and ARGC
 SKIPPED: awk handles invalid for loop
 SKIPPED: awk handles colon not preceded by ternary
 SKIPPED: awk errors on missing delete arg
 PASS: awk do not allow "str"++
-FAIL: awk FS regex which can match empty string
+PASS: awk FS regex which can match empty string
 PASS: awk $NF is empty
