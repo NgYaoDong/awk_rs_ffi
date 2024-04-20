@@ -125,6 +125,10 @@ fn deref_mut_i8_rs(ptr: *mut i8) -> i8 {
     unsafe { *ptr }
 }
 
+fn deref_const_i8_rs(ptr: *const i8) -> i8 {
+    unsafe { *ptr }
+}
+
 fn setvar_s_rs(v: *mut var, value: *mut i8) -> *mut var {
     unsafe { setvar_s(v, value) }
 }
@@ -213,11 +217,6 @@ fn newvar_rs(hash: *mut xhash, name: *mut i8) -> *mut c_void {
     unsafe { hash_find(hash, name) }
 }
 
-fn evaluate_rs(op: *mut node, res: *mut var) -> *mut var {
-    // unsafe { evaluate(op, res) }
-    evaluate_rs_translate(op, res)
-}
-
 fn awk_exit_rs(r: i32) -> i32 {
     unsafe { awk_exit(r) }
 }
@@ -276,6 +275,226 @@ fn fread_rs(ptr: *mut c_void, size: u64, n: u64, stream: *mut FILE) -> u64 {
 
 fn bitwise_or_type_rs(_v: *mut var_s, value: u32) {
     unsafe { (*_v).type_ |= value };
+}
+
+fn emsg_div_by_zero_rs() -> *const i8 {
+    unsafe { EMSG_DIV_BY_ZERO.as_ptr() }
+}
+
+fn emsg_negative_field_rs() -> *const i8 {
+    unsafe { EMSG_NEGATIVE_FIELD.as_ptr() }
+}
+
+fn fflush_all_rs() {
+    unsafe { fflush_all() };
+}
+
+fn assign_nel_rs(v: var) -> f64 {
+    (unsafe { *(v.x.array) }).nel.into()
+}
+
+fn emsg_no_math_rs() -> *const i8 {
+    unsafe { EMSG_NO_MATH.as_ptr() }
+}
+
+fn rand_rs() -> i32 {
+    unsafe { rand() }
+}
+
+fn errno_rs() -> f64 {
+    (unsafe { *__errno_location() }).into()
+}
+
+fn set_var_parent_rs(v: *mut var_s, arg: *mut var_s) {
+    unsafe { (*v).x.parent = arg };
+}
+
+fn emsg_undef_func_rs() -> *const i8 {
+    unsafe { EMSG_UNDEF_FUNC.as_ptr() }
+}
+
+fn get_node_r_f_rs(node: *mut node_s) -> *mut func_s {
+    unsafe { (*node).r.f }
+}
+
+fn emsg_possible_error_rs() -> *const i8 {
+    unsafe { EMSG_POSSIBLE_ERROR.as_ptr() }
+}
+
+fn get_node_l_new_progname_rs(node: *mut node_s) -> *const i8 {
+    unsafe { (*node).l.new_progname }
+}
+
+fn set_rsm_pipe_1_rs(rsm: *mut rstream_s) {
+    unsafe { (*rsm).is_pipe = 1 };
+}
+
+fn deref_rstream_rs(rsm: *mut rstream_s) -> rstream_s {
+    unsafe { *rsm }
+}
+
+fn stdout_rs() -> *mut FILE {
+    unsafe { stdout }
+}
+
+fn op_info_and_assign_rs(op: *mut node_s) {
+    unsafe { (*op).info &= !OF_CHECKED };
+}
+
+fn op_info_or_assign_rs(op: *mut node_s) {
+    unsafe { (*op).info |= OF_CHECKED };
+}
+
+fn get_node_a_n_rs(node: *mut node) -> *mut node {
+    unsafe { (*node).a.n }
+}
+
+fn get_node_r_n_rs(node: *mut node) -> *mut node {
+    unsafe { (*node).r.n }
+}
+
+fn emsg_not_array_rs() -> *const i8 {
+    unsafe { EMSG_NOT_ARRAY.as_ptr() }
+}
+
+fn get_node_l_aidx_rs(node: *mut node) -> i32 {
+    unsafe { (*node).l.aidx }
+}
+
+fn get_node_l_v_rs(node: *mut node) -> *mut var {
+    unsafe { (*node).l.v }
+}
+
+fn get_node_l_n_rs(node: *mut node) -> *mut node {
+    unsafe { (*node).l.n }
+}
+
+fn nvfree_rs(v1: *mut var) {
+    unsafe { nvfree(v1) }
+}
+
+fn hash_remove_rs(hash: *mut xhash, name: *const i8) {
+    unsafe { hash_remove(hash, name) }
+}
+
+fn clear_array_rs(array: *mut xhash) {
+    unsafe { clear_array(array) }
+}
+
+fn iamarray_rs(v: *mut var) -> *mut xhash {
+    unsafe { iamarray(v) }
+}
+
+fn deref_func_rs(ptr: *mut func) -> func {
+    unsafe { *ptr }
+}
+
+fn deref_node_rs(ptr: *mut node) -> node {
+    unsafe { *ptr }
+}
+
+fn nvalloc_rs(n: i32) -> *mut var {
+    unsafe { nvalloc(n) }
+}
+
+fn ptest_rs(pattern: *mut node) -> i32 {
+    unsafe { ptest(pattern) }
+}
+
+fn hashwalk_init_rs(v: *mut var, array: *mut xhash) {
+    unsafe { hashwalk_init(v, array) }
+}
+
+fn hashwalk_next_rs(v: *mut var) -> i32 {
+    unsafe { hashwalk_next(v) }
+}
+
+fn hash_find_rs(hash: *mut xhash, name: *const i8) -> *mut c_void {
+    unsafe { hash_find(hash, name) }
+}
+
+fn bb_simple_perror_msg_and_die_rs(s: *const i8) {
+    unsafe { bb_simple_perror_msg_and_die(s) }
+}
+
+fn popen_rs(command: *const ::std::os::raw::c_char, modes: *const ::std::os::raw::c_char) -> *mut FILE {
+    unsafe { popen(command, modes) }
+}
+
+fn xfopen_rs(filename: *const ::std::os::raw::c_char, mode: *const ::std::os::raw::c_char) -> *mut FILE {
+    unsafe { xfopen(filename, mode) }
+}
+
+fn fputs_rs(s: *const ::std::os::raw::c_char, stream: *mut FILE) -> ::std::os::raw::c_int {
+    unsafe { fputs(s, stream) }
+}
+
+fn nextarg_rs(pn: *mut *mut node) -> *mut node {
+    unsafe { nextarg(pn) }
+}
+
+fn awk_printf_rs(n: *mut node) -> *mut ::std::os::raw::c_char {
+    unsafe { awk_printf(n) }
+}
+
+fn fflush_rs(stream: *mut FILE) -> ::std::os::raw::c_int {
+    unsafe { fflush(stream) }
+}
+
+fn copyvar_rs(dest: *mut var, src: *const var) -> *mut var {
+    unsafe { copyvar(dest, src) }
+}
+
+fn hash_search_rs(hash: *mut xhash, name: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_void {
+    unsafe { hash_search(hash, name) }
+}
+
+fn as_regex_rs(op: *mut node, preg: *mut regex_t) -> *mut regex_t {
+    unsafe { as_regex(op, preg) }
+}
+
+fn regexec_rs(preg: *const regex_t, string: *const ::std::os::raw::c_char, nmatch: usize, pmatch: *mut regmatch_t, eflags: ::std::os::raw::c_int) -> ::std::os::raw::c_int {
+    unsafe { regexec(preg, string, nmatch, pmatch, eflags) }
+}
+
+fn regfree_rs(preg: *mut regex_t) {
+    unsafe { regfree(preg) }
+}
+
+fn fopen_for_read_rs(path: *const ::std::os::raw::c_char) -> *mut FILE {
+    unsafe { fopen_for_read(path) }
+}
+
+fn time_rs(t: *mut time_t) -> time_t {
+    unsafe { time(t) }
+}
+
+fn srand_rs(seed: u32) {
+    unsafe { srand(seed) }
+}
+
+fn system_rs(s: *const c_char) -> c_int {
+    unsafe { system(s) }
+}
+
+fn pclose_rs(stream: *mut FILE) -> ::std::os::raw::c_int {
+    unsafe { pclose(stream) }
+}
+
+fn exec_builtin_rs(op: *mut node, res: *mut var) -> *mut var {
+    unsafe { exec_builtin(op, res) }
+}
+
+fn xasprintf_rs(format: *const ::std::os::raw::c_char, arg1: *const i8, arg2: *const i8, arg3: *const i8) -> *mut ::std::os::raw::c_char {
+    unsafe { xasprintf(format, arg1, arg2, arg3) }
+}
+
+fn strcmp_rs(s1: *const ::std::os::raw::c_char, s2: *const ::std::os::raw::c_char) -> ::std::os::raw::c_int {
+    unsafe { strcmp(s1, s2) }
+}
+
+fn strcasecmp_rs(s1: *const ::std::os::raw::c_char, s2: *const ::std::os::raw::c_char) -> ::std::os::raw::c_int {
+    unsafe { strcasecmp(s1, s2) }
 }
 
 /* return true if v is number or numeric string */
@@ -421,23 +640,7 @@ fn handle_special_rs(v: *mut var) {
     }
 }
 
-fn nvalloc_rs(n: i32) -> *mut var {
-    unsafe { nvalloc(n) }
-}
-
-fn ptest_rs(pattern: *mut node) -> i32 {
-    unsafe { ptest(pattern) }
-}
-
-fn hashwalk_init_rs(v: *mut var, array: *mut xhash) {
-    unsafe { hashwalk_init(v, array) }
-}
-
-fn hashwalk_next_rs(v: *mut var) -> i32 {
-    unsafe { hashwalk_next(v) }
-}
-
-fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
+fn evaluate_rs(mut op: *mut node, mut res: *mut var) -> *mut var {
     let (globals, globals2) = init_globs_rs();
 
     /* This procedure is recursive so we should count every byte */
@@ -509,7 +712,7 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
             if !(get_node_r_n_rs(op1).is_null()) { /* array ref? */
                 //println!("array ref");
                 let s: *const i8;
-                s = getvar_s_rs(evaluate_rs_translate(get_node_r_n_rs(op1), v1));
+                s = getvar_s_rs(evaluate_rs(get_node_r_n_rs(op1), v1));
                 hash_remove_rs(iamarray_rs(v), s);
             } else {
                 //println!("line 501");
@@ -534,11 +737,11 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
 
    		/* execute inevitable things */
         if opinfo & OF_RES1 != 0 {
-                l.v = evaluate_rs_translate(op1, v1);
+                l.v = evaluate_rs(op1, v1);
                 // println!("l.v.string = {:?}", unsafe { std::ffi::CStr::from_ptr((*l.v).string) });
         }
         if opinfo & OF_RES2 != 0 {
-                r.v = evaluate_rs_translate(get_node_r_n_rs(op), v1.wrapping_add(1));
+                r.v = evaluate_rs(get_node_r_n_rs(op), v1.wrapping_add(1));
                 // println!("r.v.string = {:?}", unsafe { std::ffi::CStr::from_ptr((*r.v).string) });
         }
         if opinfo & OF_STR1 != 0 {
@@ -621,20 +824,20 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
         },
         OC_PRINT | OC_PRINTF => {
             //println!("line 609, OC_PRINT/OC_PRINTF");
-            let mut f: *mut FILE = unsafe { stdout };
+            let mut f: *mut FILE = stdout_rs();
             
-            if !(unsafe { (*op).r.n }.is_null()) {
+            if !(get_node_r_n_rs(op).is_null()) {
             //println!("line 613");
-                let rsm: *mut rstream = unsafe { hash_find(globals.fdhash, r.s) } as *mut rstream;
-                if (unsafe { *rsm }).F.is_null() {
+                let rsm: *mut rstream = hash_find_rs(globals.fdhash, r.s) as *mut rstream;
+                if deref_rstream_rs(rsm).F.is_null() {
             //println!("line 616");
                     if opn == '|' as u32 {
             //println!("line 618");
-                        unsafe { (*rsm).F = popen(r.s, "w\0".as_ptr() as *const i8) };
-                        if (unsafe { *rsm }).F.is_null() {
-                            unsafe { bb_simple_perror_msg_and_die("popen\0".as_ptr() as *const i8) };
+                        deref_rstream_rs(rsm).F = popen_rs(r.s, "w\0".as_ptr() as *const i8);
+                        if deref_rstream_rs(rsm).F.is_null() {
+                            bb_simple_perror_msg_and_die_rs("popen\0".as_ptr() as *const i8);
                         }
-                        unsafe { (*rsm).is_pipe = 1 };
+                        set_rsm_pipe_1_rs(rsm);
                     } else {
             //println!("line 625");
                         let mut val = "a\0";
@@ -642,55 +845,55 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
             //println!("line 628");
                             val = "w\0";
                         }
-                        unsafe { (*rsm).F = xfopen(r.s, val.as_ptr() as *const i8) };
+                        deref_rstream_rs(rsm).F = xfopen_rs(r.s, val.as_ptr() as *const i8);
                     }
                 }
-                f = (unsafe { *rsm }).F;
+                f = deref_rstream_rs(rsm).F;
             }
 
             if (opinfo & OPCLSMASK) == OC_PRINT {
             //println!("line 638");
                 if op1.is_null() {
             //println!("line 640, op1 is null");
-                    unsafe { fputs(getvar_s_rs(globals2.intvar[F0 as usize]), f) };
+                    fputs_rs(getvar_s_rs(globals2.intvar[F0 as usize]), f);
                 } else {
                     while !(op1.is_null()) {
             //println!("line 644, while op1 not null");
-                        let v = evaluate_rs_translate(unsafe { nextarg(&mut op1) }, v1);
+                        let v = evaluate_rs(nextarg_rs(&mut op1), v1);
 
                         if (deref_mut_var_rs(v).type_ & VF_NUMBER) != 0 {
             //println!("line 648");
             //println!("intvar[OFMT] = {:?}", unsafe { CString::from_raw(getvar_s_rs(globals2.intvar[OFMT as usize]) as *mut i8) });
                             fmt_num_rs(globals.g_buf, MAXVARFMT.try_into().unwrap(), getvar_s_rs(globals2.intvar[OFMT as usize]), 
                                     getvar_i_rs(v), 1);
-                            unsafe { fputs(globals.g_buf, f) };
+                            fputs_rs(globals.g_buf, f);
                         } else {
             //println!("line 653");
-                            unsafe { fputs(getvar_s_rs(v), f) };
+                            fputs_rs(getvar_s_rs(v), f);
                         }
 
                         if !(op1.is_null()) {
             //println!("line 658, if op no null");
-                            unsafe { fputs(getvar_s_rs(globals2.intvar[OFS as usize]), f) };
+                            fputs_rs(getvar_s_rs(globals2.intvar[OFS as usize]), f);
                         }
                     }
                 }
-                unsafe { fputs(getvar_s_rs(globals2.intvar[ORS as usize]), f) };
+                fputs_rs(getvar_s_rs(globals2.intvar[ORS as usize]), f);
             } else { /* OC_PRINTF */
             //println!("line 665");
-                let s = unsafe { awk_printf(op1) };
-                unsafe { fputs(s, f) };
+                let s = awk_printf_rs(op1);
+                fputs_rs(s, f);
                 free_rs(s);
             }
-            unsafe { fflush(f) };
+            fflush_rs(f);
         },
         OC_NEWSOURCE => {
             //println!("line 671, OC_NEWSOURCE");
-            globals.g_progname = unsafe { (*op).l.new_progname };
+            globals.g_progname = get_node_l_new_progname_rs(op);
         },
         OC_RETURN => {
             //println!("line 677, OC_RETURN");
-            unsafe { copyvar(res, l.v) };
+            copyvar_rs(res, l.v);
         },
         OC_NEXTFILE => {
             //println!("line 681, OC_NEXTFILE");
@@ -714,15 +917,15 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
         OC_VAR => {
             //println!("line 700, OC_VAR");
             // debug_printf_eval("VAR\n");
-            l.v = unsafe { (*op).l.v };
+            l.v = get_node_l_v_rs(op);
             if l.v == globals2.intvar[NF as usize] {
             //println!("line 704");
                 split_f0_rs();
             }
             //goto v_cont
-            if !(unsafe { (*op).r.n }.is_null()) {
+            if !(get_node_r_n_rs(op).is_null()) {
             //println!("line 710");
-                res = unsafe { hash_find(iamarray_rs(l.v), r.s) as *mut var };
+                res = hash_find_rs(iamarray_rs(l.v), r.s) as *mut var;
             } else {
                 res = l.v;
             }
@@ -730,11 +933,11 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
         OC_FNARG => {
             //println!("line 715, OC_FNARG");
             // debug_printf_eval("FNARG[%d]\n", op->l.aidx);
-            l.v = globals2.evaluate__fnargs.wrapping_add(unsafe { (*op).l.aidx } as usize);
+            l.v = globals2.evaluate__fnargs.wrapping_add(get_node_l_aidx_rs(op) as usize);
             // v_cont
-            if !(unsafe { (*op).r.n }.is_null()) {
+            if !(get_node_r_n_rs(op).is_null()) {
             //println!("line 721");
-                res = unsafe { hash_find(iamarray_rs(l.v), r.s) as *mut var };
+                res = hash_find_rs(iamarray_rs(l.v), r.s) as *mut var;
             } else {
                res = l.v;
             }
@@ -742,7 +945,7 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
         OC_IN => {
             //println!("line 726, OC_IN");
             let mut value = 1.0;
-            if unsafe { hash_search(iamarray_rs(r.v), l.s) }.is_null() {
+            if hash_search_rs(iamarray_rs(r.v), l.s).is_null() {
             //println!("line 729");
                 value = 0.0;
             }
@@ -755,11 +958,11 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
             //goto re_cont
             {
             //println!("line 740, inner block");
-                let re = unsafe { as_regex(op1, &mut globals2.evaluate__sreg) };
-                let i = unsafe { regexec(re, l.s, 0, null_mut(), 0) };
+                let re = as_regex_rs(op1, &mut globals2.evaluate__sreg);
+                let i = regexec_rs(re, l.s, 0, null_mut(), 0);
                 if re == &mut globals2.evaluate__sreg {
             //println!("line 744");
-                    unsafe { regfree(re) };
+                    regfree_rs(re);
                 }
                 let mut left: u32 = 0;
                 let mut right: u32 = 0;
@@ -776,15 +979,15 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
         },
         OC_MATCH => {
             //println!("line 761, OC_MATCH");
-            op1 = unsafe { (*op).r.n };
+            op1 = get_node_r_n_rs(op);
             //re_cont
             {
             //println!("line 765, inner block");
-                let re = unsafe { as_regex(op1, &mut globals2.evaluate__sreg) };
-                let i = unsafe { regexec(re, l.s, 0, null_mut(), 0) };
+                let re = as_regex_rs(op1, &mut globals2.evaluate__sreg);
+                let i = regexec_rs(re, l.s, 0, null_mut(), 0);
                 if re == &mut globals2.evaluate__sreg {
             //println!("line 769");
-                    unsafe { regfree(re) };
+                    regfree_rs(re);
                 }
                 let mut left: u32 = 0;
                 let mut right: u32 = 0;
@@ -802,20 +1005,20 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
         OC_MOVE => {
             //println!("line 786, OC_MOVE");
             // debug_printf_eval("MOVE\n");
-            res = unsafe { copyvar(l.v, r.v) };
+            res = copyvar_rs(l.v, r.v);
         },
         OC_TERNARY => {
             //println!("line 791, OC_TERNARY");
-            if ((unsafe { *(*op).r.n }).info & OPCLSMASK) != OC_COLON {
-                syntax_error_rs(unsafe { EMSG_POSSIBLE_ERROR.as_ptr() });
+            if (deref_node_rs(get_node_r_n_rs(op)).info & OPCLSMASK) != OC_COLON {
+                syntax_error_rs(emsg_possible_error_rs());
             }
-            let mut op_tmp = unsafe { (*(*op).r.n).r.n };
+            let mut op_tmp = get_node_r_n_rs(get_node_r_n_rs(op));
             if istrue_rs(l.v) != 0 {
             //println!("line 797");
-                op_tmp = unsafe { (*(*op).r.n).l.n };
+                op_tmp = get_node_l_n_rs(get_node_r_n_rs(op));
             }
 
-            res = evaluate_rs_translate(op_tmp, res);
+            res = evaluate_rs(op_tmp, res);
         },
         OC_FUNC => {
             //println!("line 804, OC_FUNC");
@@ -824,19 +1027,19 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
             let sv_progname: *const i8;
 
             /* The body might be empty, still has to eval the args */
-            if (unsafe { *(*op).r.n }).info == 0 && (unsafe { *(*op).r.f }).body.first.is_null() {
-                syntax_error_rs(unsafe { EMSG_UNDEF_FUNC.as_ptr() });
+            if deref_node_rs(get_node_r_n_rs(op)).info == 0 && deref_func_rs(get_node_r_f_rs(op)).body.first.is_null() {
+                syntax_error_rs(emsg_undef_func_rs());
             }
-            v = unsafe { nvalloc(((*(*op).r.f).nargs + 1).try_into().unwrap()) };
+            v = nvalloc_rs(((deref_func_rs(get_node_r_f_rs(op))).nargs + 1).try_into().unwrap());
             vbeg = v;
             while !(op1.is_null()) {
             //println!("line 816, while op1 not null");
-                let arg = evaluate_rs_translate(unsafe { nextarg(&mut op1) }, v1);
-                unsafe { copyvar(v, arg) };
-                unsafe { (*v).type_ |= VF_CHILD };
-                unsafe { (*v).x.parent = arg };
+                let arg = evaluate_rs(nextarg_rs(&mut op1), v1);
+                copyvar_rs(v, arg);
+                bitwise_or_type_rs(v, VF_CHILD);
+                set_var_parent_rs(v, arg);
                 v = v.wrapping_add(1);
-                if unsafe { v.offset_from(vbeg) } >= (unsafe { *(*op).r.f }).nargs.try_into().unwrap() {
+                if v_offset_from_rs(v, vbeg) >= deref_func_rs(get_node_r_f_rs(op)).nargs.try_into().unwrap() {
             //println!("line 823, breaking");
                     break;
                 }
@@ -846,7 +1049,7 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
             globals2.evaluate__fnargs = vbeg;
             sv_progname = globals.g_progname;
 
-            res = evaluate_rs_translate((unsafe { *(*op).r.f }).body.first, res);
+            res = evaluate_rs(deref_func_rs(get_node_r_f_rs(op)).body.first, res);
 
             globals.g_progname = sv_progname;
             nvfree_rs(globals2.evaluate__fnargs);
@@ -859,16 +1062,16 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
 
             if !(op1.is_null()) {
             //println!("line 844, while op1 not null");
-                rsm = unsafe { hash_find(globals.fdhash, l.s) } as *mut rstream;
-                if (unsafe { *rsm }).F.is_null() {
+                rsm = hash_find_rs(globals.fdhash, l.s) as *mut rstream;
+                if deref_rstream_rs(rsm).F.is_null() {
             //println!("line 847");
                     if (opinfo & OPCLSMASK) == OC_PGETLINE {
             //println!("line 849");
-                        unsafe { (*rsm).F = popen(l.s, "r\0".as_ptr() as *const i8) };
-                        unsafe { (*rsm).is_pipe = 1 };
+                        deref_rstream_rs(rsm).F = popen_rs(l.s, "r\0".as_ptr() as *const i8);
+                        set_rsm_pipe_1_rs(rsm);
                     } else {
             //println!("line 853");
-                        unsafe { (*rsm).F = fopen_for_read(l.s) }; /* not xfopen! */
+                        deref_rstream_rs(rsm).F = fopen_for_read_rs(l.s); /* not xfopen! */
                     }
                 }
             } else {
@@ -880,13 +1083,13 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
                 rsm = globals.iF;
             }
 
-            if rsm.is_null() || (unsafe { *rsm }).F.is_null() {
+            if rsm.is_null() || deref_rstream_rs(rsm).F.is_null() {
             //println!("line 867, breaking");
-                setvar_i_rs(globals2.intvar[ERRNO as usize], unsafe { (*__errno_location()).into() });
+                setvar_i_rs(globals2.intvar[ERRNO as usize], errno_rs());
                 setvar_i_rs(res, -1.0);
             } else {
 
-               if unsafe { (*op).r.n }.is_null() {
+               if get_node_r_n_rs(op).is_null() {
             //println!("line 874");
                     r.v = globals2.intvar[F0 as usize];
                 }
@@ -911,7 +1114,7 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
                 },
                 F_rn => {
             //println!("line 896, rn");
-                    R_d = (unsafe { rand() } as f64) / (RAND_MAX as f64);
+                    R_d = (rand_rs() as f64) / (RAND_MAX as f64);
                 },
                 F_co => {
             //println!("line 900, co");
@@ -942,7 +1145,7 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
                     if ENABLE_FEATURE_AWK_LIBM != 0 {
                         R_d = f64::sqrt(L_d);
                     } else {
-                        syntax_error_rs(unsafe { EMSG_NO_MATH.as_ptr() });
+                        syntax_error_rs(emsg_no_math_rs());
                     }
                 },
                 F_sr => {
@@ -951,13 +1154,13 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
                     globals2.evaluate__seed = L_d as u32;
                     if op1.is_null() {
             //println!("line 937, op1 is null");
-                        globals2.evaluate__seed = unsafe { time(null_mut()).try_into().unwrap() };
+                        globals2.evaluate__seed = time_rs(null_mut()).try_into().unwrap();
                     }
-                    unsafe { srand(globals2.evaluate__seed) };
+                    srand_rs(globals2.evaluate__seed);
                 },
                 F_ti => {
             //println!("line 943, ti");
-                    R_d = unsafe { time(null_mut()) as f64 };
+                    R_d = time_rs(null_mut()) as f64;
                 },
                 F_le => {
             // //println!("length: l.s = {:?}", unsafe { std::ffi::CStr::from_ptr(l.s) });
@@ -978,10 +1181,9 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
 
 
                     if deref_mut_var_rs(l.v).type_ & VF_ARRAY != 0 {
-                        R_d = (unsafe { *(*(l.v)).x.array }).nel.into();
+                        R_d = assign_nel_rs(deref_mut_var_rs(l.v));
                     } else if op1.is_null() {
                         l.s = getvar_s_rs(globals2.intvar[F0 as usize]);
-                        // l.s = unsafe { getvar_s(globals2.intvar[F0 as usize]) };
                         R_d = strlen_rs(l.s) as f64;
                     } else {
                         R_d = strlen_rs(l.s) as f64;
@@ -989,31 +1191,31 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
                 },
                 F_sy => {
             //println!("line 962, sy");
-                    unsafe { fflush_all() };
-                    if ENABLE_FEATURE_ALLOW_EXEC != 0 && !(l.s.is_null()) && unsafe { *(l.s) } != 0 {
+                    fflush_all_rs();
+                    if ENABLE_FEATURE_ALLOW_EXEC != 0 && !(l.s.is_null()) && deref_const_i8_rs(l.s) != 0 {
             //println!("line 965");
-                        R_d = (unsafe { system(l.s) >> 8 }).into();
+                        R_d = (system_rs(l.s) >> 8).into();
                     }
                 },
                 F_ff => {
             //println!("line 970, ff");
                     if op1.is_null() {
             //println!("line 972, op1 is null");
-                        unsafe { fflush(stdout) };
-                    } else if !(l.s.is_null()) && unsafe { *(l.s) } != 0 {
+                        fflush_rs(stdout_rs());
+                    } else if !(l.s.is_null()) && deref_const_i8_rs(l.s) != 0 {
             //println!("line 975");
-                        let rsm = unsafe { hash_find(globals.fdhash, l.s) } as *mut rstream;
-                        unsafe { fflush((*rsm).F) };
+                        let rsm = hash_find_rs(globals.fdhash, l.s) as *mut rstream;
+                        fflush_rs(deref_rstream_rs(rsm).F);
                     } else {
             //println!("line 979");
-                        unsafe { fflush_all() };
+                        fflush_all_rs();
                     }
                 },
                 F_cl => {
             //println!("line 984, cl");
                     let rsm: *mut rstream;
                     let mut err = 0;
-                    rsm = unsafe { hash_search(globals.fdhash, l.s) } as *mut rstream;
+                    rsm = hash_search_rs(globals.fdhash, l.s) as *mut rstream;
                     // debug_printf_eval("OC_FBLTIN F_cl rsm:%p\n", rsm);
                     if !rsm.is_null() {
                     // debug_printf_eval("OC_FBLTIN F_cl "
@@ -1024,20 +1226,20 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
 					 * close("doesnt_exist"); <--- here rsm->F is NULL
 					 */
             //println!("line 997, rsm not null");
-                        if !((unsafe { *rsm }).F.is_null()) {
+                        if !(deref_rstream_rs(rsm).F.is_null()) {
             //println!("line 999");
-                            err = unsafe { pclose((*rsm).F) };
-                            if (unsafe { *rsm }).is_pipe == 0 {
+                            err = pclose_rs(deref_rstream_rs(rsm).F);
+                            if deref_rstream_rs(rsm).is_pipe == 0 {
             //println!("line 1002");
-                                err = fclose_rs((unsafe { *rsm }).F);
+                                err = fclose_rs(deref_rstream_rs(rsm).F);
                             }
                         }
-                        free_rs((unsafe { *rsm }).buffer);
+                        free_rs(deref_rstream_rs(rsm).buffer);
                         hash_remove_rs(globals.fdhash, l.s);
                     }
                     if err != 0 {
             //println!("line 1010, err != 0");
-                        setvar_i_rs(globals2.intvar[ERRNO as usize], unsafe { (*__errno_location()).into() });
+                        setvar_i_rs(globals2.intvar[ERRNO as usize], errno_rs());
                     }
                     R_d = err.into();
                 },
@@ -1051,11 +1253,11 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
         },
         OC_BUILTIN => {
             //println!("line 1022, OC_BUILTIN");
-            res = unsafe { exec_builtin(op, res) };
+            res = exec_builtin_rs(op, res);
         },
         OC_SPRINTF => {
             //println!("line 1026, OC_SPRINTF");
-            setvar_p_rs(res, unsafe { awk_printf(op1) });
+            setvar_p_rs(res, awk_printf_rs(op1));
         },
         OC_UNARY => {
             //println!("line 1030, OC_UNARY");
@@ -1114,7 +1316,7 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
             //println!("line 1083, OC_FIELD");
             let i = getvar_i_rs(r.v) as i32;
             if i < 0 {
-                syntax_error_rs(unsafe { EMSG_NEGATIVE_FIELD }.as_ptr());
+                syntax_error_rs(emsg_negative_field_rs());
             }
             if i == 0 {
             //println!("line 1089, i == 0");
@@ -1139,20 +1341,20 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
             }
             // xasprintf???
 
-            setvar_p_rs(res, unsafe { xasprintf("%s%s%s\0".as_ptr() as *const i8, l.s, sep, r.s) });
+            setvar_p_rs(res, xasprintf_rs("%s%s%s\0".as_ptr() as *const i8, l.s, sep, r.s));
         },
         OC_LAND => {
             //println!("line 1106, OC_LAND");
             let mut val = 0;
             if istrue_rs(l.v) != 0 {
-                val = unsafe { ptest((*op).r.n) };
+                val = ptest_rs(get_node_r_n_rs(op));
             }
             setvar_i_rs(res, val.into());
         },
         OC_LOR => {
             let mut val = 1;
             if istrue_rs(l.v) == 0 {
-                val = unsafe { ptest((*op).r.n) };
+                val = ptest_rs(get_node_r_n_rs(op));
             }
             setvar_i_rs(res, val.into());
         },
@@ -1171,7 +1373,7 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
                 },
                 47 => { // case '/'
                     if R_d == 0.0 {
-                        syntax_error_rs(unsafe {EMSG_DIV_BY_ZERO}.as_ptr());
+                        syntax_error_rs(emsg_div_by_zero_rs());
                     }
                     L_d /= R_d;
                 },
@@ -1179,12 +1381,12 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
                     if ENABLE_FEATURE_AWK_LIBM != 0 {
                         L_d = f64::powf(L_d, R_d);
                     } else {
-                        syntax_error_rs(unsafe {EMSG_NO_MATH}.as_ptr());
+                        syntax_error_rs(emsg_no_math_rs());
                     }
                 },
                 37 => { // case '%'
                     if R_d == 0.0 {
-                        syntax_error_rs(unsafe {EMSG_DIV_BY_ZERO}.as_ptr());
+                        syntax_error_rs(emsg_div_by_zero_rs());
                     }
                     L_d -= ((L_d / R_d) * R_d);
                 }
@@ -1208,9 +1410,9 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
             } else {
                 let l = getvar_s_rs(l.v);
                 let r = getvar_s_rs(r.v);
-                Ld = unsafe { strcmp(l, r).into() };
+                Ld = strcmp_rs(l, r).into();
                 if globals.icase != 0 {
-                    Ld = unsafe { strcasecmp(l, r).into() };
+                    Ld = strcasecmp_rs(l, r).into();
                 }
             }
             match opn & 0xfe {
@@ -1244,12 +1446,12 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
             setvar_i_rs(res, (left ^ right) as f64);
         },
         _ => {
-            syntax_error_rs(unsafe {EMSG_POSSIBLE_ERROR.as_ptr()});
+            syntax_error_rs(emsg_possible_error_rs());
         }            
         } /* switch */
         //next
         if (opinfo & OPCLSMASK) <= SHIFT_TIL_THIS {
-            op = unsafe { (*op).a.n };
+            op = get_node_a_n_rs(op);
             continue;
         }
         if (opinfo & OPCLSMASK) >= RECUR_FROM_THIS {
@@ -1263,58 +1465,6 @@ fn evaluate_rs_translate(mut op: *mut node, mut res: *mut var) -> *mut var {
     nvfree_rs(v1);
     // debug_printf_eval("returning from %s(): %p\n", __func__, res);
     res
-}
-
-fn op_info_and_assign_rs(op: *mut node_s) {
-    unsafe { (*op).info &= !OF_CHECKED };
-}
-
-fn op_info_or_assign_rs(op: *mut node_s) {
-    unsafe { (*op ).info |= OF_CHECKED };
-}
-
-fn get_node_a_n_rs(node: *mut node) -> *mut node {
-    unsafe { (*node).a.n }
-}
-
-fn get_node_r_n_rs(node: *mut node) -> *mut node {
-    unsafe { (*node).r.n }
-}
-
-fn emsg_not_array_rs() -> *const i8 {
-    unsafe { EMSG_NOT_ARRAY.as_ptr() }
-}
-
-fn get_node_l_aidx_rs(node: *mut node) -> i32 {
-    unsafe { (*node).l.aidx }
-}
-
-fn get_node_l_v_rs(node: *mut node) -> *mut var {
-    unsafe { (*node).l.v }
-}
-
-fn get_node_l_n_rs(node: *mut node) -> *mut node {
-    unsafe { (*node).l.n }
-}
-
-fn nvfree_rs(v1: *mut var) {
-    unsafe { nvfree(v1) }
-}
-
-fn hash_remove_rs(hash: *mut xhash, name: *const i8) {
-    unsafe { hash_remove(hash, name) }
-}
-
-fn clear_array_rs(array: *mut xhash) {
-    unsafe { clear_array(array) }
-}
-
-fn iamarray_rs(v: *mut var) -> *mut xhash {
-    unsafe { iamarray(v) }
-}
-
-fn deref_node_rs(ptr: *mut node) -> node {
-    unsafe { *ptr }
 }
 
 fn awk_main_rs(_argc: i32, mut argv: *mut *mut i8) {
