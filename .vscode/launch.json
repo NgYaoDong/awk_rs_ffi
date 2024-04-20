@@ -1,0 +1,53 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable awk",
+            "program": "${workspaceFolder}/orig_c/awk",
+            "args": ["-F '[#]' '{ print NF }'"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'awk_rs'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=awk_rs",
+                    "--package=awk_rs"
+                ],
+                "filter": {
+                    "name": "awk_rs",
+                    "kind": "bin"
+                }
+            },
+            "args": ["-F '[#]' '{ print NF }'"],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'awk_rs'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=awk_rs",
+                    "--package=awk_rs"
+                ],
+                "filter": {
+                    "name": "awk_rs",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

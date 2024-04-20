@@ -1,0 +1,6 @@
+.cache
+awk
+*.dot
+*.out
+echo-ne
+*verbose

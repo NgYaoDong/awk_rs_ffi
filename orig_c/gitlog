@@ -1,0 +1,121 @@
+commit bcc5b0e6caca6c7602a6a41faa5f980292e0fbc5
+Author: Denys Vlasenko <vda.linux@googlemail.com>
+Date:   Mon May 3 20:01:08 2021 +0200
+
+    Bump version to 1.33.1
+    
+    Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+commit 611bbfc148477aec863454dd85e6f1bfe5770332
+Author: Denys Vlasenko <vda.linux@googlemail.com>
+Date:   Sat Jan 9 08:27:37 2021 +0100
+
+    ash: fix ${unset_var/pattern/repl}
+    
+    function                                             old     new   delta
+    subevalvar                                          1349    1353      +4
+    
+    Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+commit 23dd1c75b7457f08f1c55a95f3c2fb6faf742562
+Author: Samuel Sapalski <samuel.sapalski@nokia.com>
+Date:   Wed Mar 3 16:31:22 2021 +0100
+
+    decompress_gunzip: Fix DoS if gzip is corrupt
+    
+    On certain corrupt gzip files, huft_build will set the error bit on
+    the result pointer. If afterwards abort_unzip is called huft_free
+    might run into a segmentation fault or an invalid pointer to
+    free(p).
+    
+    In order to mitigate this, we check in huft_free if the error bit
+    is set and clear it before the linked list is freed.
+    
+    Signed-off-by: Samuel Sapalski <samuel.sapalski@nokia.com>
+    Signed-off-by: Peter Kaestle <peter.kaestle@nokia.com>
+    Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+commit 89358a7131d3e75c74af834bb117b4fad7914983
+Author: Denys Vlasenko <vda.linux@googlemail.com>
+Date:   Tue Feb 2 13:48:21 2021 +0100
+
+    traceroute: fix option parsing
+    
+    Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+commit 39b71881b8173225c8ef85a308523d98cb590eac
+Author: Bernd Kuhls <bernd.kuhls@t-online.de>
+Date:   Sun Jan 10 13:20:44 2021 +0100
+
+    update_passwd: fix context variable
+    
+    Commit
+    https://git.busybox.net/busybox/commit/libbb/update_passwd.c?id=2496616b0a8d1c80cd1416b73a4847b59b9f969a
+    
+    changed the variable used from context to seuser but forgot this
+    change resulting in build errors detected by buildroot autobuilders:
+    
+    http://autobuild.buildroot.net/results/b89/b89b7d0f0601bb706e76cea31cf4e43326e5540c//build-end.log
+    
+    libbb/update_passwd.c:51:11: error: 'context' undeclared (first use in
+     this function); did you mean 'ucontext'?
+       freecon(context);
+    
+    Signed-off-by: Bernd Kuhls <bernd.kuhls@t-online.de>
+    Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+commit 67cc582d4289c5de521d11b08307c8ab26ee1e28
+Author: Denys Vlasenko <vda.linux@googlemail.com>
+Date:   Sun Jan 3 10:55:39 2021 +0100
+
+    ash: make a strdup copy of $HISTFILE for line editing
+    
+    Otherwise if $HISTFILE is unset or reassigned, bad things can happen.
+    
+    function                                             old     new   delta
+    ash_main                                            1210    1218      +8
+    
+    Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+commit ee1e0987e4c81b4a5369174ce22b0671198abb6b
+Author: Maxim Storchak <m.storchak@gmail.com>
+Date:   Tue Dec 29 17:29:05 2020 +0200
+
+    httpd: fix offset for sendfile
+    
+    If the Range: header is not present it the request,
+    the offset passed to sendfile is wrong,
+    and httpd falls back to the read-write loop.
+    
+    function                                             old     new   delta
+    send_file_and_exit                                   857     865      +8
+    handle_incoming_and_exit                            2239    2230      -9
+    ------------------------------------------------------------------------------
+    (add/remove: 0/0 grow/shrink: 1/1 up/down: 8/-9)               Total: -1 bytes
+    
+    Signed-off-by: Maxim Storchak <m.storchak@gmail.com>
+    Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+commit a4c3a341394a1fb25be8c15d2ddfe3ec77cbb83c
+Author: Denys Vlasenko <vda.linux@googlemail.com>
+Date:   Tue Dec 29 17:42:59 2020 +0100
+
+    Bump version to 1.33.0
+    
+    Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+commit ec9a5e608357acdc6e793d63bddf84030aa4f024
+Author: Denys Vlasenko <vda.linux@googlemail.com>
+Date:   Tue Dec 29 17:33:22 2020 +0100
+
+    libiproute: band-aid for old uclibc missing IFA_FLAGS
+    
+    Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
+
+commit fecb1693ccef88710fbb2de86d0f92bc2c76153f
+Author: Denys Vlasenko <vda.linux@googlemail.com>
+Date:   Tue Dec 29 16:55:59 2020 +0100
+
+    modprobe-small: convert to new recursive_action() API
+    
+    Signed-off-by: Denys Vlasenko <vda.linux@googlemail.com>
