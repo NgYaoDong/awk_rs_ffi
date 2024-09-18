@@ -612,7 +612,7 @@ fn handle_special_rs(v: *mut var) {
             }
             b = qrealloc_rs(b, (len + l + sl).try_into().unwrap(), &mut bsize);
             memcpy_rs(b.wrapping_add(len) as *mut c_void, s as *const c_void, l);
-            len += sl;
+            len += l;
         }
         if b != null_mut() {
             set_b_len_rs(b, len);
@@ -629,7 +629,7 @@ fn handle_special_rs(v: *mut var) {
         mk_splitter_rs(getvar_s_rs(v), &mut globals2.rsplitter);
     } else if v == globals2.intvar[IGNORECASE as usize] {
         globals.icase = istrue_rs(v) as i8;
-    } else {
+    } else {   /* $n */
         n = getvar_i_rs(globals2.intvar[NF as usize]) as i32;
         let mut value = n;
         if n <= v_offset_from_rs(v, globals.Fields) as i32 {
